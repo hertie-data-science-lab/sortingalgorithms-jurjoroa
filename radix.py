@@ -5,40 +5,34 @@ Created on Mon Apr 24 08:53:11 2023
 @author: Hannah
 """
 
-# Using counting sort to sort the elements in the basis of significant places
-def countingSort(array, place):
-    size = len(array)
-    output = [0] * size
-    count = [0] * 10
+import math
 
-    # Calculate count of elements
-    for i in range(0, size):
-        index = array[i] // place
-        count[index % 10] += 1
+def iterative_radix_sort(arr):
+    """
+    Sorts an array of integers using an iterative radix sort algorithm.
+    :param arr: A list of integers to be sorted.
+    :return: A sorted list of integers.
+    """
+    if not arr:
+        return arr
 
-    # Calculate cumulative count
-    for i in range(1, 10):
-        count[i] += count[i - 1]
+    max_exp = math.floor(math.log10(max(arr))) + 1
 
-    # Place the elements in sorted order
-    i = size - 1
-    while i >= 0:
-        index = array[i] // place
-        output[count[index % 10] - 1] = array[i]
-        count[index % 10] -= 1
-        i -= 1
+    for exp in range(1, max_exp + 1):
+        place_value = 10 ** (exp - 1)
+        buckets = [[] for _ in range(10)]
 
-    for i in range(0, size):
-        array[i] = output[i]
+        for num in arr:
+            digit = (num // place_value) % 10
+            buckets[digit].append(num)
 
+        arr = [num for bucket in buckets for num in bucket]
 
-# Main function to implement radix sort
-def radixSort(array):
-    # Get maximum element
-    max_element = max(array)
+    return arr
 
-    # Apply counting sort to sort elements based on place value.
-    place = 1
-    while max_element // place > 0:
-        countingSort(array, place)
-        place *= 10
+# Example usage
+array = [170, 45, 75, 90, 802, 24, 2, 66]
+print("Original array:", array)
+sorted_array = iterative_radix_sort(array)
+print("Sorted array:", sorted_array)
+
